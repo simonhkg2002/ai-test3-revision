@@ -19,4 +19,12 @@
 - 六組測試不是對所有可能輸入的數學證明。沒有重跑原PDF的完整PyTorch訓練；原notebook未提供。
 - 教材主線全文核對，舊課按頁索引及相關頁閱讀，詳細狀態見 MATERIALS.md。
 - 共用PIN是簡單入口，非個人帳戶。原創課程內容公開。
-- Local API 測試進度不會帶到production；production發佈後另作登入／讀取檢查。
+- Local API 測試進度不會帶到production。正式網站已驗證PIN登入與D1 GET讀取，UI顯示「已同步」，正式進度為全新。
+
+## 正式發佈後核對
+
+- Sites原生部署結果：succeeded，version1，runtime env revision1。
+- 正式URL已在瀏覽器開啟；PIN 4321登入成功，D1讀取成功，沒有console error。
+- 390×844手機再次核對：closed drawer inert/aria-hidden；open drawer令背景inert且焦點正確；Escape可關閉。
+- 已還原預設桌面viewport並保留正式網站tab。正式首頁截圖存於ignored outputs。
+- GitHub已push main，API回報visibility=PUBLIC。沒有追蹤PDF、完整擷取、.dev.vars或.env檔。

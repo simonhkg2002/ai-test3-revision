@@ -36,7 +36,7 @@
 - [x] 本機API：兩個獨立cookie clients讀寫同一D1；重試不重複；拒絕未登入及跨origin寫入。
 - [x] 桌面／390×844手機UI：登入、逐節教學→MC、錯誤／正確／提示、結果→下一階段、短答、計算、code。
 - [x] 公開GitHub repository已建立。
-- [ ] 最終source commit/push與Sites部署（完成後補最終記錄）。
+- [x] Source commit已push至公開GitHub與Sites；production部署成功，PIN及D1讀取已驗證。
 
 ## 接續時不要重做
 
@@ -58,3 +58,15 @@
 - 未取得課程ipynb，沒有fresh-kernel完整訓練驗證。
 - 同步回應取最近20,000個events；若將來累積超過，改分頁。
 - 已提交答案跨裝置；未提交草稿及正在做的輪次不跨裝置。
+
+## 最終發佈紀錄
+
+- 2026-11-17 17:08（香港）正式部署成功。
+- URL：https://simon-ai-test3.simonhkg.chatgpt.site
+- GitHub visibility：PUBLIC；branch：main。
+- 發佈應用程式commit：`256aa51f6e12ce77941ee4eb0ae9d3db1fc8a830`。
+- Sites version：1；deployment：`appgdep_6afc199cb318819185b891983ec6eb99`。
+- 正式瀏覽器：無須ChatGPT登入即可到PIN頁；4321成功開桌，顯示「已同步」，進度保持全新。沒有把本機測試作答帶到正式資料庫。
+- 手機收起選單後不會被鍵盤選到；開啟後焦點移到關閉鍵、Escape可收起。
+- 正式預覽截圖：本機ignored `outputs/website-desktop.jpg`、`outputs/mobile.jpg`。
+- 上述部署後只補充Markdown發佈／驗證紀錄；應用程式與資料庫schema不再變更。
