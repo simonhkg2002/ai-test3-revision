@@ -74,3 +74,5 @@
 ## 2026-11-18：按例子學習的修訂
 
 Simon 表示 Unit01 太難，具體指出原文一口氣定義 tensor/scalar/vector/matrix/shape/rank/dtype/device 沒有足夠例子。已按「先看具體數字 → 逐步觀察 → 命名 → 一題即時小練習」重編 Unit01 為11小節，從一個價錢開始。其他單元保留原有worked example並改為例子先於概念段落。小練習不計分、不寫入掌握紀錄；原120題ID與已儲存作答保持相容。新教材來源檔 scripts/tensor-lessons.py 由 author-course.py載入。
+
+例子優先修訂已於2026-11-18部署為Sites version2；應用程式commit f8fd2fb732cdcc664b3788e7c59352ad342967ce。正式Unit01已確認顯示11節、新表格、例子先於概念，原有進度仍可讀取。GitHub同步更新；截圖於ignored outputs/example-first.jpg。此後只補發佈紀錄。
