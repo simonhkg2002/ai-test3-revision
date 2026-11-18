@@ -70,3 +70,7 @@
 - 手機收起選單後不會被鍵盤選到；開啟後焦點移到關閉鍵、Escape可收起。
 - 正式預覽截圖：本機ignored `outputs/website-desktop.jpg`、`outputs/mobile.jpg`。
 - 上述部署後只補充Markdown發佈／驗證紀錄；應用程式與資料庫schema不再變更。
+
+## 2026-11-18：按例子學習的修訂
+
+Simon 表示 Unit01 太難，具體指出原文一口氣定義 tensor/scalar/vector/matrix/shape/rank/dtype/device 沒有足夠例子。已按「先看具體數字 → 逐步觀察 → 命名 → 一題即時小練習」重編 Unit01 為11小節，從一個價錢開始。其他單元保留原有worked example並改為例子先於概念段落。小練習不計分、不寫入掌握紀錄；原120題ID與已儲存作答保持相容。新教材來源檔 scripts/tensor-lessons.py 由 author-course.py載入。

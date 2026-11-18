@@ -6,6 +6,13 @@ export type Lesson = {
   example: string;
   steps: string[];
   trap: string;
+  visual?: { rows: string[][]; caption: string; axes: boolean };
+  check?: {
+    prompt: string;
+    options: string[];
+    correct: number;
+    explanation: string;
+  };
 };
 export type Module = {
   id: string;

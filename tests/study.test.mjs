@@ -181,3 +181,25 @@ test("all 14 numerical families produce reproducible finite variations over 100 
       );
     }
 });
+test("beginner lessons introduce one visual example at a time and keep checks answerable", () => {
+  const first = modules[0].lessons;
+  assert.equal(first.length, 11);
+  assert.deepEqual(first[0].visual.rows, [["8"]]);
+  assert.deepEqual(first[1].visual.rows, [["8", "12", "15"]]);
+  assert.deepEqual(first[2].visual.rows, [
+    ["8", "12", "15"],
+    ["9", "11", "16"],
+  ]);
+  assert.equal(first[2].check.options[first[2].check.correct], "2 行");
+  for (const lesson of first) {
+    assert.ok(lesson.check);
+    assert.ok(
+      lesson.check.correct >= 0 &&
+        lesson.check.correct < lesson.check.options.length,
+    );
+    if (lesson.visual) {
+      const width = lesson.visual.rows[0].length;
+      assert.ok(lesson.visual.rows.every((row) => row.length === width));
+    }
+  }
+});

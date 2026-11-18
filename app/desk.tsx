@@ -25,6 +25,7 @@ import {
   questions,
   kindName,
   type Module,
+  type Lesson,
   type Question,
   type Kind,
 } from "../lib/course";
@@ -883,6 +884,7 @@ function Learning({
             {m.lessons.map((l, i) => (
               <button
                 key={l.title}
+                aria-label={`小節 ${i + 1}：${l.title}`}
                 aria-current={i === lesson ? "step" : undefined}
                 onClick={() => setLesson(i)}
               >
@@ -896,16 +898,21 @@ function Learning({
               CONCEPT {lesson + 1} / {m.lessons.length}
             </p>
             <h3>{l.title}</h3>
-            <p>{l.body}</p>
             <div className="worked">
-              <span className="mini-label">跟我做一次 / WORKED EXAMPLE</span>
+              <span className="mini-label">先看一個例子 / EXAMPLE FIRST</span>
               <h4>{l.example}</h4>
+              {l.visual && <ExampleTable visual={l.visual} />}
               <ol>
                 {l.steps.map((step) => (
                   <li key={step}>{step}</li>
                 ))}
               </ol>
             </div>
+            <div className="concept-name">
+              <h4>把例子連到名稱</h4>
+              <p>{l.body}</p>
+            </div>
+            {l.check && <MiniCheck key={m.id + lesson} check={l.check} />}
             <aside className="trap">
               <strong>容易混淆的地方</strong>
               <p>{l.trap}</p>
@@ -1653,6 +1660,67 @@ function PracticeSession({
           </section>
         )}
       </div>
+    </section>
+  );
+}
+
+function ExampleTable({ visual }: { visual: NonNullable<Lesson["visual"]> }) {
+  return (
+    <div className="example-grid">
+      <table>
+        <caption>{visual.caption}</caption>
+        {visual.axes && (
+          <thead>
+            <tr>
+              <td></td>
+              {visual.rows[0].map((_, i) => (
+                <th scope="col" key={i}>
+                  第{i + 1}列 ↓
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {visual.rows.map((row, i) => (
+            <tr key={i}>
+              {visual.axes && <th scope="row">第{i + 1}行 →</th>}
+              {row.map((cell, j) => (
+                <td key={j}>{cell}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+function MiniCheck({ check }: { check: NonNullable<Lesson["check"]> }) {
+  const [choice, setChoice] = useState<number | null>(null);
+  return (
+    <section className="mini-check">
+      <p className="mini-label">輪到你觀察 · 不計分</p>
+      <h4>{check.prompt}</h4>
+      <div>
+        {check.options.map((option, i) => (
+          <button
+            key={option}
+            className={"secondary " + (choice === i ? "mini-picked" : "")}
+            aria-pressed={choice === i}
+            onClick={() => setChoice(i)}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+      {choice !== null && (
+        <p className="mini-feedback" role="status">
+          {choice === check.correct
+            ? "對，這一步答對了。"
+            : "再看一次上面的例子。"}{" "}
+          {check.explanation}
+        </p>
+      )}
     </section>
   );
 }

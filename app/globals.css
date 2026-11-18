@@ -2470,3 +2470,105 @@ select {
 .solution ol {
   list-style: decimal;
 }
+.example-grid {
+  overflow-x: auto;
+  margin: 18px 0;
+}
+.example-grid table {
+  border-collapse: separate;
+  border-spacing: 5px;
+  width: auto;
+  max-width: 100%;
+  text-align: center;
+  margin: auto;
+}
+.example-grid caption {
+  caption-side: bottom;
+  font-size: 11px;
+  color: #57664d;
+  line-height: 1.8;
+  padding-top: 12px;
+}
+.example-grid td:not(:first-child),
+.example-grid tbody td {
+  min-width: 46px;
+  background: var(--paper);
+  border: 1px solid #cbd7bc;
+  padding: 12px 16px;
+  border-radius: 4px;
+  font-family: ui-monospace, monospace;
+  font-size: 22px;
+  color: var(--green);
+}
+.example-grid th {
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: #65775b;
+  padding: 4px 7px;
+}
+.concept-name {
+  margin: 24px 0;
+}
+.concept-name h4 {
+  font-size: 11px;
+  color: var(--green);
+  margin-bottom: 9px;
+}
+.concept-name p {
+  font-size: 14px;
+  line-height: 2;
+}
+.mini-check {
+  border: 1px solid var(--line);
+  padding: 20px;
+  border-radius: 4px;
+  margin: 24px 0;
+}
+.mini-check h4 {
+  font-size: 14px;
+  margin: 12px 0;
+}
+.mini-check > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.mini-picked {
+  border-color: var(--green);
+  background: var(--soft);
+}
+.mini-feedback {
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--green);
+  margin-top: 16px;
+}
+.lesson-tabs button {
+  width: 32px;
+  height: 32px;
+}
+.lesson-tabs {
+  gap: 8px;
+}
+@media (max-width: 640px) {
+  .example-grid tbody td {
+    min-width: 38px;
+    padding: 10px;
+    font-size: 20px;
+  }
+  .example-grid th {
+    font-size: 9px;
+    padding: 3px;
+  }
+  .concept-name p {
+    font-size: 13px;
+  }
+  .mini-check {
+    padding: 16px;
+  }
+  .mini-check .secondary {
+    font-size: 12px;
+    min-height: 44px;
+  }
+}

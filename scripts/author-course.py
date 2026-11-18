@@ -191,5 +191,6 @@ calc('language','c3','僅按本題假設價格，非最新售價：每百萬inpu
 for q in questions:
  if q['id']=='language-c3':
   for f in q['fields']:f['tolerance']=.000001
+exec(Path(__file__).with_name('tensor-lessons.py').read_text())
 Path('data/course.json').write_text(json.dumps(dict(modules=modules,questions=questions),ensure_ascii=False,indent=2)+'\n')
 print(f'{len(modules)} modules, {len(questions)} original questions')
