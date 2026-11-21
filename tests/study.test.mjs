@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   DAY,
+  rewardCount,
   hkDay,
   questionState,
   mergeEvents,
@@ -183,14 +184,11 @@ test("all 14 numerical families produce reproducible finite variations over 100 
 });
 test("beginner lessons introduce one visual example at a time and keep checks answerable", () => {
   const first = modules[0].lessons;
-  assert.equal(first.length, 11);
-  assert.deepEqual(first[0].visual.rows, [["8"]]);
-  assert.deepEqual(first[1].visual.rows, [["8", "12", "15"]]);
-  assert.deepEqual(first[2].visual.rows, [
-    ["8", "12", "15"],
-    ["9", "11", "16"],
-  ]);
-  assert.equal(first[2].check.options[first[2].check.correct], "2 行");
+  assert.equal(first.length, 21);
+  assert.match(first[0].example, /任務/);
+  assert.match(first[9].steps.join(" "), /@/);
+  assert.match(first[10].steps.join(" "), /39/);
+  assert.deepEqual(first[4].visual.rows[0], ["日期 / 水果", "蘋果", "橙", "梨"]);
   for (const lesson of first) {
     assert.ok(lesson.check);
     assert.ok(
@@ -202,4 +200,15 @@ test("beginner lessons introduce one visual example at a time and keep checks an
       assert.ok(lesson.visual.rows.every((row) => row.length === width));
     }
   }
+});
+
+test("rewards count distinct correct answers, allow learning retries, exclude self grading", () => {
+  const at = Date.now();
+  assert.equal(rewardCount([
+    event("a", at, {correct:false}), event("b", at), event("c", at),
+    event("d", at, {qid:"tensor-lesson-v2-0", assisted:true}),
+    event("e", at, {qid:"tensor-l1", self:true}),
+    event("f", at, {qid:"tensor-read", kind:"read"}),
+  ]), 2);
+  assert.equal(rewardCount([]), 0);
 });

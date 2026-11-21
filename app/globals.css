@@ -2582,3 +2582,17 @@ select {
 .quiz-lesson pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:16px;background:rgba(0,0,0,.035);font-size:1rem;line-height:1.7}
 .quiz-lesson ol{padding-left:24px}.quiz-actions{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
 .quiz-note{color:var(--muted,#555)}
+
+/* Read one small step at a time; keep the earlier steps visible. */
+.guided-lesson .worked li { margin: 1.1rem 0; line-height: 1.95; font-size: 1.08rem; }
+.guided-lesson .worked h4 { white-space: pre-wrap; line-height: 1.85; }
+.guided-lesson summary { cursor: pointer; }
+.reward-progress { display: flex; flex-wrap: wrap; gap: .8rem 1.2rem; padding: 1.2rem; margin: 1.4rem 0; border: 1px solid #c6d9ca; border-radius: 14px; background: #f0f7ef; color: #294b39; }
+.reward-progress a { text-decoration: underline; }
+.reward-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 1.2rem; margin-top: 1.5rem; }
+.reward-card { border: 1px solid var(--line, #ddd); border-radius: 16px; padding: 1.2rem; background: white; min-width: 0; }
+.reward-card h2 { font-size: 1.2rem; margin: 1rem 0; }
+.reward-card img { width: 100%; height: 360px; object-fit: contain; background: #f4f2ed; border-radius: 10px; }
+.reward-card .photo-credit { font-size: .75rem; line-height: 1.7; }
+.photo-credit a { text-decoration: underline; }
+.reward-locked { min-height: 300px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1rem; background: #f4f2ed; border-radius: 10px; }

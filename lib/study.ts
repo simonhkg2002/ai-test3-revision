@@ -231,3 +231,8 @@ export function variant(moduleId: string, seed: number): Question {
     variant: seed,
   };
 }
+
+// Learning checks can be assisted; this is encouragement, not a mastery score.
+export function rewardCount(events: StudyEvent[]) {
+  return new Set(events.filter(e => e.kind === "answer" && e.correct && !e.self).map(e => e.qid)).size;
+}

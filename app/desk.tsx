@@ -19,6 +19,7 @@ import {
   ChevronLeft,
   CheckCheck,
   Download,
+  Gift,
 } from "lucide-react";
 import {
   modules,
@@ -34,6 +35,7 @@ import {
   hkDay,
   questionState,
   gradeNumbers,
+  rewardCount,
   variant,
   type StudyEvent,
 } from "../lib/study";
@@ -49,6 +51,7 @@ const quizIds = ["rnn", "rnn-shape", "lstm", "attention", "attention-matrix"];
 const quizQuestions = questions.filter(q => quizIds.includes(q.moduleId) && !/GRU|Transformer/i.test(q.prompt));
 const nav = [
   ["quiz", "11/25 考試專區", BookOpen],
+  ["rewards", "讀書獎勵", Gift],
   ["today", "今日", Home],
   ["learn", "學習路線", Layers],
   ["practice", "練習室", BookOpen],
@@ -480,6 +483,8 @@ export default function Desk() {
             />
           ) : view === "quiz" ? (
             <QuizRevision start={start} />
+          ) : view === "rewards" ? (
+            <Rewards events={study.events} />
           ) : view === "today" ? (
             <>
               <div className="page-heading">
@@ -762,7 +767,10 @@ function QuizRevision({ start }: { start: (s: Session) => void }) {
   return <>
     <PageTitle eyebrow="NOVEMBER 25 · WEDNESDAY" title="這次考試，專心讀這裡。" desc="老師已確認：RNN、LSTM、Attention。本週 Transformer 架構不考。" />
     <section className="quiz-banner">
-      <h2>由例子開始，再自己做一次</h2>
+      <h2>從第一步開始：先讀懂題目</h2>
+      <p>連水果例子、方括號或 A @ B 都未明？先完成零基礎導讀，每次只展開一步。</p>
+      <a className="primary" href="#learn/tensor">由第一課慢慢開始 →</a>
+      <p><a href="#rewards">讀書獎勵：完成 1、5、10 道不同小練習，各解鎖一張照片</a></p>
       <p>先讀 RNN，接住 LSTM，最後 Attention。每節展開都有例子、逐步解釋同易錯位。以下練習只抽本次範圍，舊進度與錯題紀錄繼續保留。</p>
       <button className="primary" onClick={() => {
         const items = ["rnn", "lstm", "attention"].flatMap(topic => {
@@ -937,25 +945,13 @@ function Learning({
               CONCEPT {lesson + 1} / {m.lessons.length}
             </p>
             <h3>{l.title}</h3>
-            <div className="worked">
-              <span className="mini-label">先看一個例子 / EXAMPLE FIRST</span>
-              <h4>{l.example}</h4>
-              {l.visual && <ExampleTable visual={l.visual} />}
-              <ol>
-                {l.steps.map((step) => (
-                  <li key={step}>{step}</li>
-                ))}
-              </ol>
-            </div>
-            <div className="concept-name">
-              <h4>把例子連到名稱</h4>
-              <p>{l.body}</p>
-            </div>
-            {l.check && <MiniCheck key={m.id + lesson} check={l.check} />}
-            <aside className="trap">
-              <strong>容易混淆的地方</strong>
-              <p>{l.trap}</p>
-            </aside>
+            <GuidedLesson key={m.id + lesson} lesson={l} onCorrect={() => {
+              const qid = `${m.id}-lesson-v2-${lesson}`;
+              if (!events.some(e => e.qid === qid && e.correct)) record({
+                kind: "answer", qid, moduleId: m.id, correct: true, assisted: true, self: false,
+              });
+            }} />
+            <RewardProgress events={events} />
           </div>
           <div className="lesson-bottom">
             <button
@@ -1734,11 +1730,11 @@ function ExampleTable({ visual }: { visual: NonNullable<Lesson["visual"]> }) {
     </div>
   );
 }
-function MiniCheck({ check }: { check: NonNullable<Lesson["check"]> }) {
+function MiniCheck({ check, onCorrect }: { check: NonNullable<Lesson["check"]>; onCorrect?: () => void }) {
   const [choice, setChoice] = useState<number | null>(null);
   return (
     <section className="mini-check">
-      <p className="mini-label">輪到你觀察 · 不計分</p>
+      <p className="mini-label">只試這一步 · 答錯可以重試</p>
       <h4>{check.prompt}</h4>
       <div>
         {check.options.map((option, i) => (
@@ -1746,7 +1742,7 @@ function MiniCheck({ check }: { check: NonNullable<Lesson["check"]> }) {
             key={option}
             className={"secondary " + (choice === i ? "mini-picked" : "")}
             aria-pressed={choice === i}
-            onClick={() => setChoice(i)}
+            onClick={() => { setChoice(i); if (i === check.correct) onCorrect?.(); }}
           >
             {option}
           </button>
@@ -1762,4 +1758,55 @@ function MiniCheck({ check }: { check: NonNullable<Lesson["check"]> }) {
       )}
     </section>
   );
+}
+
+function GuidedLesson({ lesson: l, onCorrect }: { lesson: Lesson; onCorrect: () => void }) {
+  const [shown, setShown] = useState(0);
+  const complete = shown === l.steps.length;
+  return <div className="guided-lesson">
+    <section className="worked">
+      <span className="mini-label">先讀情境與任務</span><h4>{l.example}</h4>
+      <p>不用一次看完。每按一次，只多看一小步。</p>
+      <ol aria-live="polite">{l.steps.slice(0, shown).map((step, i) => <li key={i}>{step}</li>)}</ol>
+      {!complete && <button className="primary" onClick={() => setShown(shown + 1)}>{shown === 0 ? "先解釋第一步" : "再看下一步"}（{shown + 1}/{l.steps.length}）</button>}
+      {shown > 0 && <button className="text-btn" onClick={() => setShown(shown - 1)}>收起最後一步</button>}
+    </section>
+    {complete && <>
+      {l.visual && <ExampleTable visual={l.visual} />}
+      <div className="concept-name"><h4>現在才認識名稱</h4><p>{l.body}</p></div>
+      {l.check && <MiniCheck check={l.check} onCorrect={onCorrect} />}
+      <details className="trap"><summary>想知道容易混淆的地方？</summary><p>{l.trap}</p></details>
+    </>}
+  </div>;
+}
+const rewardPhotos = [
+  { at: 1, file: "lin-1.jpg", title: "第一步，做到了", source: "Mizuki_Lin_holding_her_photobook_in_front_of_the_stage_20220820.jpg", note: "原圖，未修改" },
+  { at: 5, file: "lin-2.jpg", title: "五個小進步", source: "Mizuki_Lin_giving_autographs_on_the_stage_20220820b.jpg", note: "來源為裁切版（ウィ貴公子）；本站未再修改" },
+  { at: 10, file: "lin-3.jpg", title: "十步累積的成果", source: "Mizuki_Lin_standing_on_the_stage_20220820b_(cropped).jpg", note: "來源為裁切版（ウィ貴公子）；本站未再修改" },
+];
+function RewardProgress({ events }: { events: StudyEvent[] }) {
+  const count = rewardCount(events);
+  const next = rewardPhotos.find(p => p.at > count);
+  return <aside className="reward-progress" role="status">
+    <strong>★ 已完成 {count} 道不同題目</strong>
+    <span>{next ? `再完成 ${next.at - count} 道，解鎖第 ${rewardPhotos.indexOf(next) + 1} 張活動照。` : "三張活動照已全部解鎖！可以休息一下。"}</span>
+    <a href="#rewards">打開我的獎勵 →</a>
+  </aside>;
+}
+function Rewards({ events }: { events: StudyEvent[] }) {
+  const count = rewardCount(events);
+  return <>
+    <PageTitle eyebrow="SMALL STEPS COUNT" title="學懂一小步，也值得獎勵。" desc="完成 1、5、10 道不同題目，各解鎖一張林襄公開活動照片。" />
+    <RewardProgress events={events} />
+    <p>小節觀察題答對、或練習室作答正確都計一次；可看解釋後重試。重做同一題不重複加分，答錯不扣分，沒有連續天數壓力。短答自評不計入。這是鼓勵學習的紀錄，不代表考試熟練度。</p>
+    <p>獎勵沿用你的讀書紀錄同步；離線時先保存在本機，恢復連線後同步。</p>
+    <div className="reward-grid">{rewardPhotos.map(p => <article className="reward-card" key={p.file}>
+      <span className="chip">{p.at} 題里程碑</span><h2>{p.title}</h2>
+      {count >= p.at ? <>
+        <img src={`/rewards/${p.file}`} alt="林襄於 2022 年 8 月 20 日公開簽書活動" loading="lazy" width="400" height="480" />
+        <p>林襄 · 2022/08/20 公開活動</p>
+        <p className="photo-credit">攝影：<a href="https://commons.wikimedia.org/wiki/User:Solomon203" target="_blank" rel="noreferrer">Solomon203</a> · <a href={`https://commons.wikimedia.org/wiki/File:${p.source}`} target="_blank" rel="noreferrer">Wikimedia Commons 原始來源</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">CC BY-SA 4.0</a>。{p.note}。人物及攝影者與本網站沒有代言關係。</p>
+      </> : <div className="reward-locked"><LockKeyhole aria-hidden="true" /><p>再完成 {p.at-count} 道不同題目</p><a className="secondary" href="#learn/tensor">回去慢慢學</a></div>}
+    </article>)}</div>
+  </>;
 }
