@@ -2572,3 +2572,13 @@ select {
     min-height: 44px;
   }
 }
+
+/* Dedicated announced quiz scope, independent of the full learning route. */
+.quiz-banner,.quiz-unit{border:1px solid var(--line,#d6d8d0);border-radius:16px;padding:clamp(18px,3vw,30px);margin-bottom:24px;background:var(--paper,#fff)}
+.quiz-banner p,.quiz-unit p,.quiz-unit li{font-size:1rem;line-height:1.8}
+.quiz-unit h2{font-size:1.45rem;margin-bottom:8px}
+.quiz-lesson{border-top:1px solid var(--line,#d6d8d0);padding:16px 0}
+.quiz-lesson summary{font-size:1.05rem;cursor:pointer;font-weight:600}
+.quiz-lesson pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:16px;background:rgba(0,0,0,.035);font-size:1rem;line-height:1.7}
+.quiz-lesson ol{padding-left:24px}.quiz-actions{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
+.quiz-note{color:var(--muted,#555)}

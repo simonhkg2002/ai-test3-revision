@@ -10,7 +10,7 @@
 
 網站：https://simon-ai-test3.simonhkg.chatgpt.site
 
-簡單 PIN：`4321`。這是共用學習桌，持同一 PIN 者可讀寫同一進度；公開 source code 的課程內容不受 PIN 保密。不要用來保存私密資料。
+簡單 PIN：（另行提供）。這是共用學習桌，持同一 PIN 者可讀寫同一進度；公開 source code 的課程內容不受 PIN 保密。不要用來保存私密資料。
 
 ## 第一次使用
 
@@ -38,7 +38,7 @@ Node >=22.13（測試腳本使用 Node24 原生 TypeScript）；`npm ci` 後：
 ```sh
 npm run build
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_left_eternity.sql
-npm start -- --port 5173 --var STUDY_PIN:4321 --var SESSION_SECRET:local-preview-only
+npm start -- --port 5173 --var STUDY_PIN:（另行提供） --var SESSION_SECRET:local-preview-only
 ```
 
 上方 secret 只作本機預覽；正式環境須用獨立長隨機值，存於 hosting 的 runtime secrets。不要 commit `.dev.vars` 或正式憑證。Local D1 與 production 分開，migration 只在新本機資料庫執行一次。
@@ -52,3 +52,7 @@ python3 tests/api-smoke.py
 API smoke 只對 `127.0.0.1:5173` 的本機資料庫建立測試紀錄。正式網站由 Sites 發佈；`.openai/hosting.json` 保留網站 ID，D1 schema-only migration 在部署時套用。
 
 `data/course.json` 是網站題庫；`scripts/author-course.py` 是其可重建來源。改內容時更新兩者，再執行數值 oracle 測試。`.materials/`、`outputs/`、build 及 runtime state 均不入 Git。
+
+## 11 月 25 日考試專區
+
+入口：網站主選單「11/25 考試專區」（`#quiz`）。依老師公告整理 RNN、LSTM、Attention 的例子、逐步解說、分類練習與 12 題混合小測。此專區排除 GRU 與 Transformer 架構，完整學習路線及既有作答紀錄保留。

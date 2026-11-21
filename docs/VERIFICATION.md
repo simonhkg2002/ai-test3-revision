@@ -24,7 +24,7 @@
 ## 正式發佈後核對
 
 - Sites原生部署結果：succeeded，version1，runtime env revision1。
-- 正式URL已在瀏覽器開啟；PIN 4321登入成功，D1讀取成功，沒有console error。
+- 正式URL已在瀏覽器開啟；PIN （另行提供）登入成功，D1讀取成功，沒有console error。
 - 390×844手機再次核對：closed drawer inert/aria-hidden；open drawer令背景inert且焦點正確；Escape可關閉。
 - 已還原預設桌面viewport並保留正式網站tab。正式首頁截圖存於ignored outputs。
 - GitHub已push main，API回報visibility=PUBLIC。沒有追蹤PDF、完整擷取、.dev.vars或.env檔。

@@ -45,7 +45,10 @@ type Session = {
   kind?: Kind;
 };
 const kinds: Kind[] = ["mc", "logic", "calc", "code"];
+const quizIds = ["rnn", "rnn-shape", "lstm", "attention", "attention-matrix"];
+const quizQuestions = questions.filter(q => quizIds.includes(q.moduleId) && !/GRU|Transformer/i.test(q.prompt));
 const nav = [
+  ["quiz", "11/25 考試專區", BookOpen],
   ["today", "今日", Home],
   ["learn", "學習路線", Layers],
   ["practice", "練習室", BookOpen],
@@ -83,7 +86,7 @@ function Sources({ module }: { module: Module }) {
           <li key={s}>{s}</li>
         ))}
       </ul>
-      <p>講解與練習為重新編寫。未取得老師正式範圍或考試評分準則。</p>
+      <p>講解與練習為重新編寫。11/25 正式範圍為 RNN、LSTM、Attention；未取得考試評分準則。</p>
     </details>
   );
 }
@@ -162,7 +165,7 @@ function moduleStats(m: Module, events: StudyEvent[]) {
 }
 export default function Desk() {
   const study = useStudy();
-  const [view, setView] = useState("today"),
+  const [view, setView] = useState("quiz"),
     [mid, setMid] = useState(modules[0].id),
     [mobile, setMobile] = useState(false),
     [session, setSession] = useState<Session | null>(null),
@@ -475,6 +478,8 @@ export default function Desk() {
                 });
               }}
             />
+          ) : view === "quiz" ? (
+            <QuizRevision start={start} />
           ) : view === "today" ? (
             <>
               <div className="page-heading">
@@ -612,8 +617,7 @@ export default function Desk() {
               <div className="scope-note">
                 <span className="scope-dot" />
                 <p>
-                  <strong>備試方向</strong>　主攻 CNN
-                  之後，先補必要基礎，不設歷史題。範圍依你對上次測驗的回憶規劃，尚待老師確認。
+                  <strong>老師已確認範圍</strong>　11 月 25 日考 RNN、LSTM、Attention；本週 Transformer 架構不考。主選單「11/25 考試專區」只練本次範圍。
                 </p>
               </div>
               <Weekly events={attempts} />
@@ -753,6 +757,41 @@ export default function Desk() {
     </div>
   );
 }
+function QuizRevision({ start }: { start: (s: Session) => void }) {
+  const selected = modules.filter(m => quizIds.includes(m.id));
+  return <>
+    <PageTitle eyebrow="NOVEMBER 25 · WEDNESDAY" title="這次考試，專心讀這裡。" desc="老師已確認：RNN、LSTM、Attention。本週 Transformer 架構不考。" />
+    <section className="quiz-banner">
+      <h2>由例子開始，再自己做一次</h2>
+      <p>先讀 RNN，接住 LSTM，最後 Attention。每節展開都有例子、逐步解釋同易錯位。以下練習只抽本次範圍，舊進度與錯題紀錄繼續保留。</p>
+      <button className="primary" onClick={() => {
+        const items = ["rnn", "lstm", "attention"].flatMap(topic => {
+          const ids = topic === "rnn" ? ["rnn", "rnn-shape"] : topic === "attention" ? ["attention", "attention-matrix"] : ["lstm"];
+          return kinds.flatMap(kind => shuffle(quizQuestions.filter(q => ids.includes(q.moduleId) && q.type === kind)).slice(0,1));
+        });
+        start({ title: "11/25 範圍小測 · 12 題", items: shuffle(items) });
+      }}>開始本次範圍小測</button>
+      <p className="quiz-note">原創練習，唔係老師試卷；短答及程式題按參考答案自評。GRU、Transformer 架構留喺完整課程，不納入呢個專區。</p>
+    </section>
+    <div className="quiz-sections">{selected.map(m => <section className="quiz-unit" key={m.id}>
+      <h2>{m.title}</h2><p>{m.en}</p>
+      {m.lessons.filter(l => !/GRU/i.test(l.title)).map(l => <details className="quiz-lesson" key={l.title}>
+        <summary>{l.title}</summary>
+        <h3>先看例子</h3><pre>{l.example}</pre>
+        <p>{l.body}</p><ol>{l.steps.map((step,i) => <li key={i}>{step}</li>)}</ol>
+        <p><strong>容易混淆：</strong>{l.trap}</p>
+      </details>)}
+      <div className="quiz-actions">{kinds.map(kind => <button className="secondary" key={kind} onClick={() => start({title: `11/25 · ${m.title} · ${kindName[kind]}`,items: quizQuestions.filter(q => q.moduleId === m.id && q.type === kind)})}>{kindName[kind]}</button>)}</div>
+      <Sources module={m} />
+    </section>)}</div>
+    <section className="quiz-banner"><h2>考前自己講得出嗎？</h2><ul>
+      <li>RNN：h_t 點樣由 x_t 同 h_(t−1) 更新？點解時間步共用參數？</li>
+      <li>LSTM：forget／input／output gate 各自控制乜？c_t 同 h_t 有咩分別？</li>
+      <li>Attention：Q 同 K 計分，softmax 求權重，再加權 V；矩陣 shape 同計算次序係乜？</li>
+    </ul><p>補底內容仍喺「學習路線」，完整題庫仍喺「練習室」。本專區按 2026 年 11 月 21 日收到嘅老師公告整理。</p></section>
+  </>;
+}
+
 function PageTitle({
   eyebrow,
   title,
